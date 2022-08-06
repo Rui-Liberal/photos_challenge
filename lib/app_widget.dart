@@ -10,6 +10,10 @@ class AppWidget extends StatelessWidget {
       title: 'Photos Challenge',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.blueGrey,
+          elevation: 0
+        )
       ),
       routeInformationParser: Modular.routeInformationParser,
       routerDelegate: Modular.routerDelegate,

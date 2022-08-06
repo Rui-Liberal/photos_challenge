@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:photos_challenge/modules/photos/domain/entities/photo.dart';
+import 'package:photos_challenge/modules/photos/presentation/widgets/photo_widget.dart';
 
 class PhotoScreen extends StatelessWidget {
   final Photo photo;
@@ -7,45 +9,49 @@ class PhotoScreen extends StatelessWidget {
   const PhotoScreen({required this.photo, Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    AssetImage photoPlaceholder = const AssetImage('assets/photo_test.jpeg');
-
+  Widget build(BuildContext context) {    
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          onPressed: () => Modular.to.pop(),
+        ),
+      ),
       body: Column(
         children: [
-          SizedBox(
-            height: 400,
-            child: Hero(
-              tag: photo.id,
-              child: Image.network(
-                photo.url,
-                fit: BoxFit.fill,
-                loadingBuilder: (context, child, loadingProgress) {
-                  return Image(image: photoPlaceholder);
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return Center(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(Icons.error),
-                        Text('Erro ao carregar imagem...')
-                      ]
-                    ),
-                  );
-                },
-              )
-              
-              /*
-              FadeInImage(
-                image: NetworkImage(photo.url),
-                placeholder: photoPlaceholder
-              )
-              */
+          Hero(
+            tag: photo.id,
+            child: SizedBox(
+              width: double.infinity,
+              height: 250,
+              child: PhotoWidget(url: photo.url)
             ),
           ),
-          Text(photo.title)
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 10,
+              horizontal: 15,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.9,
+                  ),
+                  child: Text(
+                    photo.title,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

@@ -15,6 +15,12 @@ class _PhotosListScreenState extends State<PhotosListScreen> {
   final bloc = Modular.get<PhotoListBloc>();
 
   @override
+  void initState() {
+    super.initState();
+    bloc.add(GetPhotoListEvent());
+  }
+
+  @override
   void dispose() {
     super.dispose();
     bloc.close();
@@ -34,6 +40,7 @@ class _PhotosListScreenState extends State<PhotosListScreen> {
       ),
       body: Column(
         children: [
+          const SizedBox(height: 5,),
           Expanded(
             child: StreamBuilder<PhotoListState>(
               stream: bloc.stream,
@@ -66,10 +73,26 @@ class _PhotosListScreenState extends State<PhotosListScreen> {
                     final photo = list[index];
                     return ListTile(
                       title: Text(photo.title),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)
+                      ),
                       leading: Hero(
                         tag: photo.id,
-                        child: const CircleAvatar(
-                          backgroundImage: AssetImage('assets/photo_test.jpeg') //NetworkImage(photo.url),
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: Image.network(
+                            photo.url,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Center(
+                                child: Icon(
+                                  Icons.error_outline_rounded,
+                                  size: 20,
+                                  color: Colors.redAccent
+                                ),
+                              );
+                            },
+                          )
                         )
                       ),
                       onTap: () => Modular.to.pushNamed('/photo', arguments: photo),
